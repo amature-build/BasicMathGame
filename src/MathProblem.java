@@ -6,7 +6,10 @@ public class MathProblem {
     public MathProblem(){
 
     }
-
+    private int generateRandNum(){
+        int randIndex = _rand.nextInt(_numberList.length);
+        return _numberList[randIndex];
+    }
     /**
      * The generateAddition method creates a basic Addition problem
      * using pre-generated list of numbers
@@ -14,11 +17,9 @@ public class MathProblem {
      * @return Int Array
      */
     public int[] generateAddition(){
-        int questionA, questionB, answer, randIndexA, randIndexB;
-        randIndexA = _rand.nextInt(_numberList.length);
-        randIndexB = _rand.nextInt(_numberList.length);
-        questionA = _numberList[randIndexA];
-        questionB = _numberList[randIndexB];
+        int questionA, questionB, answer;
+        questionA = generateRandNum();
+        questionB = generateRandNum();
         answer = questionA + questionB;
         return new int[]{1, questionA, questionB, answer};
     }
@@ -30,12 +31,10 @@ public class MathProblem {
      * @return Int Array
      */
     public int[] generateSubtraction(){
-        int questionA, questionB, answer, randIndexA, randIndexB;
-        randIndexA = _rand.nextInt(_numberList.length);
-        questionA = _numberList[randIndexA];
+        int questionA, questionB, answer;
+        questionA = generateRandNum();
         do {
-            randIndexB = _rand.nextInt(_numberList.length);
-            questionB = _numberList[randIndexB];
+            questionB = generateRandNum();
         } while (questionA < questionB);
 
         answer = questionA - questionB;
@@ -49,12 +48,10 @@ public class MathProblem {
      * @return Int Array
      */
     public int[] generateMultiplication(){
-        int questionA, questionB, answer, randIndexA, randIndexB;
-        randIndexA = _rand.nextInt(_numberList.length);
-        questionA = _numberList[randIndexA];
+        int questionA, questionB, answer;
+        questionA = generateRandNum();
         do {
-            randIndexB = _rand.nextInt(_numberList.length);
-            questionB = _numberList[randIndexB];
+            questionB = generateRandNum();
         } while (questionB == 0 && questionA == 0);
 
         answer = questionA * questionB;
@@ -68,12 +65,10 @@ public class MathProblem {
      * @return Int Array
      */
     public int[] generateDivision(){
-        int questionA, questionB, answer, randIndexAnswer, randIndexB;
-        randIndexAnswer = _rand.nextInt(_numberList.length);
-        answer = _numberList[randIndexAnswer];
+        int questionA, questionB, answer;
+        answer = generateRandNum();
         do {
-            randIndexB = _rand.nextInt(_numberList.length);
-            questionB = _numberList[randIndexB];
+            questionB = generateRandNum();
         } while (questionB == 0);
 
         questionA = answer * questionB;
