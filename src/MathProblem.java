@@ -2,13 +2,18 @@ import java.util.Random;
 
 public class MathProblem {
     private Random _rand = new Random();
-    private int[] _numberList = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    private final int[] NUMBER_LIST = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     public MathProblem(){
 
     }
+
+    /**
+     * Utilize pre-generated list to output a random number
+     * @return int
+     */
     private int generateRandNum(){
-        int randIndex = _rand.nextInt(_numberList.length);
-        return _numberList[randIndex];
+        int randIndex = _rand.nextInt(NUMBER_LIST.length);
+        return NUMBER_LIST[randIndex];
     }
     /**
      * The generateAddition method creates a basic Addition problem

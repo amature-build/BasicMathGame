@@ -1,7 +1,10 @@
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
 
-        MathProblem mathGame = new MathProblem();
+        GameUI ui = new GameUI();
+
+//        ui.welcome();
+        ui.promptUserName();
+
     }
 }
