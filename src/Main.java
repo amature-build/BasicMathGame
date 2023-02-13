@@ -5,14 +5,15 @@ public class Main {
 
         ui.welcome();
         ui.promptUserName();
-
         ui.problemSelection();
-
         ui.promptSelection();
-        ui.problemDisplay();
-        ui.promptSolution();
-        ui.promptAnswerResult();
-
+        do {
+            ui.problemDisplay();
+            ui.promptSolution();
+            ui.promptAnswerResult();
+            ui.problemSelection();
+            ui.promptSelection();
+        } while (ui.toContinue());
     }
 
 }

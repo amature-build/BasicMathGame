@@ -7,7 +7,7 @@ public class GameUI {
     private final int INNER_SQUARE_WIDTH_START = 6;
     private final int INNER_SQUARE_LENGTH_START = 2;
 
-    private Scanner _scan = new Scanner(System.in);
+    private String _toContinue;
     private String _userInput;
     private int[] _problem;
     public GameUI() {
@@ -279,19 +279,14 @@ public class GameUI {
         do {
             Scanner scan = new Scanner(System.in);
             this._userInput = scan.nextLine();
+            this._toContinue = this._userInput;
             isInValidInput = !validateSelectionInput(this._userInput);
             if (isInValidInput){
                 System.out.println("Invalid input. Please try again.");
             }
-            promptSelectionQuit(this._userInput);
         } while (isInValidInput);
     }
 
-    private void promptSelectionQuit(String strInput){
-        if (strInput.equalsIgnoreCase("n")){
-            System.exit(0);
-        }
-    }
     private boolean isBlankWelcome(int x, int y){
         boolean boolInnerSquareWidth = y >= INNER_SQUARE_WIDTH_START && y < WIDTH - INNER_SQUARE_WIDTH_START;
         boolean boolInnerSquareLength = x >= INNER_SQUARE_LENGTH_START && x < LENGTH - INNER_SQUARE_LENGTH_START;
@@ -320,5 +315,8 @@ public class GameUI {
             default -> msg = "******                            ******";
         }
         return msg;
+    }
+    public boolean toContinue(){
+        return !this._toContinue.equalsIgnoreCase("n");
     }
 }
