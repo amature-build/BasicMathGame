@@ -3,8 +3,16 @@ public class Main {
 
         GameUI ui = new GameUI();
 
-//        ui.welcome();
+        ui.welcome();
         ui.promptUserName();
-//        ui.problemSelection();
+
+        ui.problemSelection();
+
+        ui.promptSelection();
+        ui.problemDisplay();
+        ui.promptSolution();
+        ui.promptAnswerResult();
+
     }
+
 }

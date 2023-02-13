@@ -8,6 +8,10 @@ public class GameUI {
     private final int INNER_SQUARE_LENGTH_START = 2;
 
     private Scanner _scan = new Scanner(System.in);
+    private String _userInput;
+    private int[] _problem;
+    public GameUI() {
+    }
 
     /**
      * Method to create initial display screen for UI
@@ -48,35 +52,32 @@ public class GameUI {
     }
 
     /**
-     * Method to ask user if want to start to game or exit.
+     * Method to ask user whether to start to game or exit.
      */
     private void promptWelcome(){
-        String userInput;
         System.out.println("Press y/Y to continue. Any other char to quit.");
-        userInput = _scan.next();
+        Scanner scan = new Scanner(System.in);
+        this._userInput = scan.nextLine();
 
-        if (!userInput.equalsIgnoreCase("y")){
+        if (!this._userInput.equalsIgnoreCase("y")){
             System.exit(0);
         }
     }
 
     /**
      * asks user to make input for a unique name
-     * @return String validated username
      */
-    public String promptUserName(){
-        String userInput;
+    public void promptUserName(){
         boolean isInValidInput;
-
         do {
             System.out.println("Enter a Unique Name and Press ENTER");
-            userInput = _scan.nextLine();
-            isInValidInput = !validateUserName(userInput);
+            Scanner scan = new Scanner(System.in);
+            this._userInput = scan.nextLine();
+            isInValidInput = !validateUserName(this._userInput);
             if (isInValidInput){
                 System.out.println("Incorrect input.\nDo not enter 0-9 and Space");
             }
         } while (isInValidInput);
-        return userInput;
     }
 
     /**
@@ -95,16 +96,15 @@ public class GameUI {
     public void problemSelection(){
         for (int i = 0; i < LENGTH; i++) {
             for (int j = 0; j < WIDTH; j++) {
-                if (isBlankSelection(i) && j == 0){
+                if (isBlank(i) && j == 0){
                     String output = isProblemOption(i);
                     System.out.print(output);
-                } else if (!isBlankSelection(i)){
+                } else if (!isBlank(i)){
                     System.out.print("*");
                 }
             }
             System.out.println();
         }
-        promptSelection();
     }
 
     /**
@@ -135,24 +135,156 @@ public class GameUI {
         return validate(keyToIgnore, userInput);
     }
 
+    public void promptSolution(){
+        boolean isNegative;
+        do {
+            System.out.println("Please enter the answer.");
+            Scanner scan = new Scanner(System.in);
+            this._userInput = scan.nextLine();
+            isNegative = !validatePositiveInteger(this._userInput);
+            if (isNegative){
+                System.out.println("Please enter positive number for the answer.");
+            }
+        } while (isNegative);
+    }
+
+    private boolean checkAnswer(){
+        int answer = Integer.parseInt(this._userInput);
+        return answer == this._problem[3];
+    }
+    public void promptAnswerResult(){
+        boolean correctAnswer = checkAnswer();
+        if (correctAnswer){
+            System.out.println("******           RIGHT!           ******");
+        } else {
+            System.out.println("******           WRONG!           ******");
+        }
+    }
+
+    private boolean validatePositiveInteger(String userInput){
+        String pattern = "[0-9]";
+
+        if (validate(pattern, userInput)){
+            int intInput = Integer.parseInt(userInput);
+            return intInput > 0;
+        }
+
+        return false;
+    }
+
+    public void problemDisplay(){
+        int userInput = Integer.parseInt(this._userInput);
+        isProblemSelected(userInput);
+        for (int i = 0; i < LENGTH; i++) {
+            for (int j = 0; j < WIDTH; j++) {
+                if (isBlank(i) && j == 0 && i == 2) {
+                    System.out.print(isProblemSelectedHeader(userInput));
+                } else if (isBlank(i) && j == 0 && i == 6){
+//                    FOR MATH PROBLEM
+                    String output = problemSelectedLine(this._problem[1], this._problem[2], problemSelectedSign(userInput));
+                    System.out.print(output);
+                } else if (isBlank(i) && i != 2 && i != 6 && j == 0){
+                    System.out.print("******                            ******");
+                } else if (!isBlank(i)){
+                    System.out.print("*");
+                }
+            }
+            System.out.println();
+        }
+    }
+
+    /**
+     * Outputs a String for math problem
+     * ex. 12 + 12 = ?
+     * @param a part A of the equation
+     * @param b part B of the equation
+     * @param sign sign of the equation
+     * @return String of full equation except for answer
+     */
+    private String problemSelectedLine(int a, int b, String sign){
+        String strA = String.valueOf(a);
+        String strB = String.valueOf(b);
+        String output = "";
+        String problem = strA + " " + sign + " " + strB + " = ?";
+        int problem_start = (WIDTH / 2) - (problem.length() / 2);
+        for (int i = 0; i < WIDTH; i++) {
+            if (isBlankWelcome(6, i)){
+                if (i == problem_start) {
+                    output += problem;
+                } else if (i > problem_start && i < problem.length() + problem_start) {
+                    output += "";
+                } else {
+                    output += " ";
+                }
+            } else {
+                output += "*";
+            }
+        }
+        return output;
+    }
+    private String problemSelectedSign(int mathProblemID){
+        switch (mathProblemID){
+            case 1 -> {return "+";}
+            case 2 -> {return "-";}
+            case 3 -> {return "*";}
+            case 4 -> {return "/";}
+            default -> {return null;}
+        }
+    }
+    private void isProblemSelected(int mathProblemID){
+        MathProblem mathProblem = new MathProblem();
+
+        switch (mathProblemID) {
+            case 1 -> this._problem =  mathProblem.generateAddition();
+            case 2 -> this._problem =  mathProblem.generateSubtraction();
+            case 3 -> this._problem =  mathProblem.generateMultiplication();
+            case 4 -> this._problem = mathProblem.generateDivision();
+        }
+    }
+    private String isProblemSelectedHeader(int iWhere){
+        String[] headers = {"ADDITION", "SUBTRACTION", "MULTIPLICATION", "DIVISION"};
+        String msg = "";
+        String output = "";
+        switch (iWhere){
+            case 1 -> msg = headers[0];
+            case 2 -> msg = headers[1];
+            case 3 -> msg = headers[2];
+            case 4 -> msg = headers[3];
+        }
+        int header_start = (WIDTH / 2) - (msg.length() / 2);
+
+        for (int i = 0; i < WIDTH; i++) {
+            if (isBlankWelcome(2, i)){
+                if (i == header_start){
+                    output += msg;
+                } else if (i > header_start && i < msg.length() + header_start) {
+                    output += "";
+                } else {
+                    output += " ";
+                }
+            } else {
+                output += "*";
+            }
+        }
+
+        return output;
+    }
+
     /**
      * Promps user to make selection to game.
      * If validated and correct, output the user input.
-     * @return validated user input
      */
-    private String promptSelection(){
-        String userInput;
+    public void promptSelection(){
         boolean isInValidInput;
         do {
-            userInput = _scan.nextLine();
-            isInValidInput = !validateSelectionInput(userInput);
+            Scanner scan = new Scanner(System.in);
+            this._userInput = scan.nextLine();
+            isInValidInput = !validateSelectionInput(this._userInput);
             if (isInValidInput){
                 System.out.println("Invalid input. Please try again.");
             }
-            promptSelectionQuit(userInput);
+            promptSelectionQuit(this._userInput);
         } while (isInValidInput);
-
-        return userInput;
     }
 
     private void promptSelectionQuit(String strInput){
@@ -166,9 +298,8 @@ public class GameUI {
         return boolInnerSquareLength && boolInnerSquareWidth;
     }
 
-    private boolean isBlankSelection(int x){
-        boolean boolInnerSquareLength = x >= INNER_SQUARE_LENGTH_START && x < LENGTH - INNER_SQUARE_LENGTH_START;
-        return boolInnerSquareLength;
+    private boolean isBlank(int x){
+        return x >= INNER_SQUARE_LENGTH_START && x < LENGTH - INNER_SQUARE_LENGTH_START;
     }
 
     /**
@@ -190,5 +321,4 @@ public class GameUI {
         }
         return msg;
     }
-
 }
