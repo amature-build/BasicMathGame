@@ -70,7 +70,7 @@ public class generateProblem {
     @Test
     public void divisionWorksAsIntended(){
         int[] problem = test.generateDivision();
-        boolean testCase1 = problem[1] >= problem[2];
+        boolean testCase1 = problem[1] == 0 ? problem[2] != 0 : problem[1] >= problem[2];
         boolean testCase2 = problem[3] >= 0;
         boolean testCase3 = problem[1] % problem[2] != 1;
         Assertions.assertTrue(testCase1 && testCase2 && testCase3);

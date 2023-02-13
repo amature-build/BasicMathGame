@@ -1,8 +1,11 @@
 import java.util.Scanner;
 
 public class GameUI {
-    private final int LENGTH = 11;
+    private final int LENGTH = 13;
     private final int WIDTH = 40;
+
+    private final int INNER_SQUARE_WIDTH_START = 6;
+    private final int INNER_SQUARE_LENGTH_START = 2;
 
     private Scanner _scan = new Scanner(System.in);
 
@@ -12,14 +15,16 @@ public class GameUI {
     public void welcome(){
         String[] msg = {"TheMathGame", "By Amature.Build"};
         boolean isGameTitle, isDevName, isGameTitleBlank, isDevNameBlank;
+        int gameTitleStart = 14;
+        int devNameStart = 12;
         for (int i = 0; i < LENGTH; i++) {
             for (int j = 0; j < WIDTH; j++) {
-                if (j >=6 && j < WIDTH - 6 && i >= 2 && i < LENGTH - 2){
+                if (isBlankWelcome(i, j)){
 
-                    isGameTitle = i == 4 && j == 14;
-                    isDevName = i == 6 && j == 12;
-                    isGameTitleBlank = i == 4 && j > 14 && j < WIDTH - msg[0].length() - 4;
-                    isDevNameBlank = i == 6 && j > 12 && j < WIDTH - msg[1].length() + 4;
+                    isGameTitle = i == 5 && j == gameTitleStart;
+                    isDevName = i == 7 && j == devNameStart;
+                    isGameTitleBlank = i == 5 && j > gameTitleStart && j < msg[0].length() + gameTitleStart;
+                    isDevNameBlank = i == 7 && j > devNameStart && j < msg[1].length() + devNameStart;
 
                     if (isGameTitle){
                         System.out.print(msg[0]);
@@ -47,11 +52,10 @@ public class GameUI {
      */
     private void promptWelcome(){
         String userInput;
-        String[] possibleInputs = {"y", "Y"};
         System.out.println("Press y/Y to continue. Any other char to quit.");
         userInput = _scan.next();
 
-        if (!userInput.toLowerCase().equals("y")){
+        if (!userInput.equalsIgnoreCase("y")){
             System.exit(0);
         }
     }
@@ -82,14 +86,109 @@ public class GameUI {
      */
     private boolean validateUserName(String userName){
         String keyToIgnore = "[0-9 ]";
+        return !validate(keyToIgnore, userName);
+    }
 
-        for (int i = 0; i < userName.length(); i++) {
-            String strChar = String.valueOf(userName.charAt(i));
-            boolean matchCondition = strChar.matches(keyToIgnore);
+    /**
+     * Display possible selection for the MathGame
+     */
+    public void problemSelection(){
+        for (int i = 0; i < LENGTH; i++) {
+            for (int j = 0; j < WIDTH; j++) {
+                if (isBlankSelection(i) && j == 0){
+                    String output = isProblemOption(i);
+                    System.out.print(output);
+                } else if (!isBlankSelection(i)){
+                    System.out.print("*");
+                }
+            }
+            System.out.println();
+        }
+        promptSelection();
+    }
+
+    /**
+     * Validate given word against given pattern
+     * @param patterns takes in patterns to validate users input
+     * @param toTest takes in users input to test again given patterns
+     * @return boolean
+     */
+    private boolean validate(String patterns, String toTest){
+        for (int i = 0; i < toTest.length(); i++) {
+            String strChar = String.valueOf(toTest.charAt(i));
+            boolean matchCondition = strChar.toLowerCase().matches(patterns);
             if(matchCondition){
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
+
+    /**
+     * With pattern as [12345n]. Validate if user input is not in given pattern
+     * @param userInput users input from scanner
+     * @return boolean
+     */
+    private boolean validateSelectionInput(String userInput){
+        String keyToIgnore = "^[12345n]";
+
+        return validate(keyToIgnore, userInput);
+    }
+
+    /**
+     * Promps user to make selection to game.
+     * If validated and correct, output the user input.
+     * @return validated user input
+     */
+    private String promptSelection(){
+        String userInput;
+        boolean isInValidInput;
+        do {
+            userInput = _scan.nextLine();
+            isInValidInput = !validateSelectionInput(userInput);
+            if (isInValidInput){
+                System.out.println("Invalid input. Please try again.");
+            }
+            promptSelectionQuit(userInput);
+        } while (isInValidInput);
+
+        return userInput;
+    }
+
+    private void promptSelectionQuit(String strInput){
+        if (strInput.equalsIgnoreCase("n")){
+            System.exit(0);
+        }
+    }
+    private boolean isBlankWelcome(int x, int y){
+        boolean boolInnerSquareWidth = y >= INNER_SQUARE_WIDTH_START && y < WIDTH - INNER_SQUARE_WIDTH_START;
+        boolean boolInnerSquareLength = x >= INNER_SQUARE_LENGTH_START && x < LENGTH - INNER_SQUARE_LENGTH_START;
+        return boolInnerSquareLength && boolInnerSquareWidth;
+    }
+
+    private boolean isBlankSelection(int x){
+        boolean boolInnerSquareLength = x >= INNER_SQUARE_LENGTH_START && x < LENGTH - INNER_SQUARE_LENGTH_START;
+        return boolInnerSquareLength;
+    }
+
+    /**
+     * Lazy way to output menu selection
+     * @param x where the output should be
+     * @return the output
+     */
+    private String isProblemOption(int x){
+        String msg;
+        switch (x) {
+            case 2 -> msg = "******     CHOOSE A PROBLEM       ******";
+            case 4 -> msg = "******  1. ADD                    ******";
+            case 5 -> msg = "******  2. SUBTRACT               ******";
+            case 6 -> msg = "******  3. MULTIPLY               ******";
+            case 7 -> msg = "******  4. DIVIDE                 ******";
+            case 8 -> msg = "******  5. STATS                  ******";
+            case 9 -> msg = "******  n/N to QUIT               ******";
+            default -> msg = "******                            ******";
+        }
+        return msg;
+    }
+
 }
