@@ -141,19 +141,19 @@ public class GameUI {
             System.out.println("Please enter the answer.");
             Scanner scan = new Scanner(System.in);
             this._userInput = scan.nextLine();
-            isNegative = !validatePositiveInteger(this._userInput);
+            isNegative = !validateUserAnswer(this._userInput);
             if (isNegative){
                 System.out.println("Please enter positive number for the answer.");
             }
         } while (isNegative);
     }
 
-    private boolean checkAnswer(){
+    private boolean checkUserAnswer(){
         int answer = Integer.parseInt(this._userInput);
         return answer == this._problem[3];
     }
     public void promptAnswerResult(){
-        boolean correctAnswer = checkAnswer();
+        boolean correctAnswer = checkUserAnswer();
         if (correctAnswer){
             System.out.println("******           RIGHT!           ******");
         } else {
@@ -161,7 +161,7 @@ public class GameUI {
         }
     }
 
-    private boolean validatePositiveInteger(String userInput){
+    private boolean validateUserAnswer(String userInput){
         String pattern = "[0-9]";
 
         if (validate(pattern, userInput)){
@@ -171,7 +171,28 @@ public class GameUI {
 
         return false;
     }
+    private String generateLineDisplayCenter(String wordToDisplay){
+        String output = "";
+        int displayStart = (WIDTH / 2) - (wordToDisplay.length() / 2);
+        for (int i = 0; i < WIDTH; i++) {
+            if (isBlankWelcome(6, i)){
+                if (i == displayStart) {
+                    output += wordToDisplay;
+                } else if (i > displayStart && i < wordToDisplay.length() + displayStart) {
+                    output += "";
+                } else {
+                    output += " ";
+                }
+            } else {
+                output += "*";
+            }
+        }
+        return output;
+    }
+    public void displayStats(){
+        String[] stringList = {"Name", "Total Earning", "Total Correct", "Total Incorrect"};
 
+    }
     public void problemDisplay(){
         int userInput = Integer.parseInt(this._userInput);
         isProblemSelected(userInput);
@@ -206,20 +227,7 @@ public class GameUI {
         String strB = String.valueOf(b);
         String output = "";
         String problem = strA + " " + sign + " " + strB + " = ?";
-        int problem_start = (WIDTH / 2) - (problem.length() / 2);
-        for (int i = 0; i < WIDTH; i++) {
-            if (isBlankWelcome(6, i)){
-                if (i == problem_start) {
-                    output += problem;
-                } else if (i > problem_start && i < problem.length() + problem_start) {
-                    output += "";
-                } else {
-                    output += " ";
-                }
-            } else {
-                output += "*";
-            }
-        }
+        output = generateLineDisplayCenter(problem);
         return output;
     }
     private String problemSelectedSign(int mathProblemID){

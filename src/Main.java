@@ -14,6 +14,7 @@ public class Main {
             ui.problemSelection();
             ui.promptSelection();
         } while (ui.toContinue());
+
     }
 
 }
