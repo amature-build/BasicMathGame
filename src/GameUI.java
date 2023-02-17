@@ -7,6 +7,8 @@ public class GameUI {
     private final int INNER_SQUARE_WIDTH_START = 6;
     private final int INNER_SQUARE_LENGTH_START = 2;
 
+    private Data _scoreData;
+
     private String _toContinue;
     private String _userInput;
     private int[] _problem;
@@ -78,6 +80,8 @@ public class GameUI {
                 System.out.println("Incorrect input.\nDo not enter 0-9 and Space");
             }
         } while (isInValidInput);
+
+        _scoreData = new Data(this._userInput);
     }
 
     /**
@@ -189,9 +193,63 @@ public class GameUI {
         }
         return output;
     }
-    public void displayStats(){
-        String[] stringList = {"Name", "Total Earning", "Total Correct", "Total Incorrect"};
 
+    private String generateLineDisplay(String wordToDisplay, int displayStart){
+        String output = "";
+
+        for (int i = 0; i < WIDTH; i++) {
+            if (isBlankWelcome(6, i)){
+                if (i == displayStart) {
+                    output += wordToDisplay;
+                } else if (i > displayStart && i < wordToDisplay.length() + displayStart) {
+                    output += "";
+                } else {
+                    output += " ";
+                }
+            } else {
+                output += "*";
+            }
+        }
+        return output;
+    }
+
+    private String strStatName(){
+        return "Name: " + _scoreData.getName();
+    }
+    private String strStatEarning(){
+        return "Total Earnings: $" + _scoreData.totalEarning();
+    }
+    private String strStatWin(){
+        return "Total Correct: " + _scoreData.getWin();
+    }
+    private String strStatLoss(){
+        return "Total Incorrect: " + _scoreData.getLoss();
+    }
+    public void displayStats(){
+        String output;
+
+        for (int i = 0; i < LENGTH; i++) {
+            for (int j = 0; j < WIDTH; j++) {
+                if (isBlank(i) && j == 0 && i == 3) {
+                    output = generateLineDisplay(strStatName(), INNER_SQUARE_WIDTH_START + 1);
+                    System.out.print(output);
+                } else if (isBlank(i) && j == 0 && i == 5) {
+                    output = generateLineDisplay(strStatEarning(), INNER_SQUARE_WIDTH_START + 1);
+                    System.out.print(output);
+                } else if (isBlank(i) && j == 0 && i == 7) {
+                    output = generateLineDisplay(strStatWin(), INNER_SQUARE_WIDTH_START + 1);
+                    System.out.print(output);
+                } else if (isBlank(i) && j == 0 && i == 9) {
+                    output = generateLineDisplay(strStatLoss(), INNER_SQUARE_WIDTH_START + 1);
+                    System.out.print(output);
+                } else if (isBlank(i) && j == 0) {
+                    System.out.print("******                            ******");
+                } else if (!isBlank(i)) {
+                    System.out.print("*");
+                }
+            }
+            System.out.println();
+        }
     }
     public void problemDisplay(){
         int userInput = Integer.parseInt(this._userInput);
