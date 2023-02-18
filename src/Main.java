@@ -5,17 +5,7 @@ public class Main {
 
         ui.welcome();
         ui.promptUserName();
-        ui.problemSelection();
-        ui.promptSelection();
-//        do {
-//            ui.problemDisplay();
-//            ui.promptSolution();
-//            ui.promptAnswerResult();
-//            ui.problemSelection();
-//            ui.promptSelection();
-//        } while (ui.toContinue());
-
-        ui.displayStats();
+        ui.mainProcess();
     }
 
 }

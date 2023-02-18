@@ -1,3 +1,5 @@
+import javax.swing.*;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class GameUI {
@@ -94,6 +96,48 @@ public class GameUI {
         return !validate(keyToIgnore, userName);
     }
 
+    public void mainProcess(){
+        problemSelection();
+        promptSelection();
+        do {
+            if (this._userInput.equalsIgnoreCase("5")){
+                statProcess();
+            } else {
+                problemProcess();
+            }
+        } while (toContinue());
+    }
+    private void statProcess(){
+        displayStats();
+        statExit();
+        problemSelection();
+        promptSelection();
+    }
+    private boolean validateEInput(String input){
+        String pattern = "[e]";
+
+        return validate(pattern, input.toLowerCase());
+    }
+    private void statExit() {
+        boolean invalid;
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Press e/E to exit...");
+
+        do {
+            invalid = !validateEInput(scan.nextLine());
+            if (invalid){
+                System.out.println("Wrong input. Please press e/E to exit.");
+            }
+        } while (invalid);
+    }
+    private void problemProcess(){
+        problemDisplay();
+        promptSolution();
+        promptAnswerResult();
+        problemSelection();
+        promptSelection();
+    }
+
     /**
      * Display possible selection for the MathGame
      */
@@ -159,10 +203,13 @@ public class GameUI {
     public void promptAnswerResult(){
         boolean correctAnswer = checkUserAnswer();
         if (correctAnswer){
+            this._scoreData.addWin();
             System.out.println("******           RIGHT!           ******");
         } else {
+            this._scoreData.addLoss();
             System.out.println("******           WRONG!           ******");
         }
+        this._scoreData.saveToFile();
     }
 
     private boolean validateUserAnswer(String userInput){
@@ -170,7 +217,7 @@ public class GameUI {
 
         if (validate(pattern, userInput)){
             int intInput = Integer.parseInt(userInput);
-            return intInput > 0;
+            return intInput >= 0;
         }
 
         return false;

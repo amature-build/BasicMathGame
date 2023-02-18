@@ -15,6 +15,7 @@ public class Data {
     public Data(String filename){
         this._fileName = filename;
         setFile();
+        fileInitialProcess();
     }
     private void setFile() {
         this._file = new File(this._fileName);
@@ -24,16 +25,21 @@ public class Data {
             this._file.createNewFile();
         }
     }
-    public void fileInitialProcess() throws IOException {
-        createFile();
-        String fileContent = readFile();
-        extractContent(fileContent);
+    private void fileInitialProcess() {
+        try {
+            createFile();
+            String fileContent = readFile();
+            extractContent(fileContent);
+        }
+        catch (IOException e) {
+            System.out.println("Error exception caught from user.");
+        }
     }
     private String readFile() throws FileNotFoundException {
         Scanner scan = new Scanner(this._file);
         String fileContent = "";
         while(scan.hasNextLine()){
-            fileContent = fileContent.concat(scan.nextLine() + "\n");
+            fileContent = fileContent.concat(scan.nextLine());
         }
         return fileContent;
     }
@@ -73,11 +79,15 @@ public class Data {
     private String stringFileContent(){
         return this._fileName + "|" + this._scoreWin + "|" + this._scoreLoss;
     }
-    public void saveToFile() throws IOException {
+    public void saveToFile() {
         String fileData = stringFileContent();
-
-        FileWriter writer = new FileWriter(this._fileName);
-        writer.write(fileData);
-        writer.close();
+        try {
+            FileWriter writer = new FileWriter(this._fileName);
+            writer.write(fileData);
+            writer.close();
+        }
+        catch (IOException e){
+            System.out.println("Error caught from user.");
+        }
     }
 }
